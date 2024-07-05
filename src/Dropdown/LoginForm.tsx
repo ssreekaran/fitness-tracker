@@ -1,38 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LoginForm.css";
 
-function LoginForm() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+const LoginForm: React.FC = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission logic here
+  const handleLogin = async () => {
+    console.log("Logging in with:", username, password); // Check if values are correctly captured
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+      console.log("Login response:", data); // Check response from server
+      // Handle success or failure
+    } catch (error) {
+      console.error("Error:", error); // Check for any JavaScript errors
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="login-form">
-      <label htmlFor="email">Email:</label>
+    <div>
       <input
-        type="email"
-        id="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
       />
-
-      <label htmlFor="password">Password:</label>
       <input
         type="password"
-        id="password"
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        required
       />
-
-      <button type="submit">Log In</button>
-    </form>
+      <button onClick={handleLogin}>Login</button>
+    </div>
   );
-}
+};
 
 export default LoginForm;
